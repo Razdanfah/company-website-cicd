@@ -25,12 +25,12 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa \
           ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
-          "mkdir -p ~/website"
+          "mkdir -p /home/ubuntu/website"
 
       - name: Copy Files to EC2 using SCP
         run: |
           scp -i ~/.ssh/id_rsa -r ./* \
-          ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/website/
+          ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/ubuntu/website/
 
       - name: Deploy Website to /var/www/html
         run: |
