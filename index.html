@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Prime Video - Clone</title>
+    <style>
+        /* CSS Reset & Variables */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        :root {
+            --bg-color: #0f171e;
+            --nav-bg: #1a242f;
+            --prime-blue: #00a8e1;
+            --text-main: #ffffff;
+            --text-sub: #8197a4;
+            --btn-hover: #008cb0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--nav-bg);
+            padding: 10px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--text-main);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .logo span {
+            color: var(--prime-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-main);
+        }
+
+        .nav-right .btn-signin {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            border: 1px solid var(--text-sub);
+            padding: 6px 15px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .nav-right .btn-signin:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--text-main);
+        }
+
+        /* Hero Showcase Section */
+        .hero {
+            position: relative;
+            height: 75vh;
+            background: linear-gradient(to right, rgba(15,23,30,1) 30%, rgba(15,23,30,0.2) 70%), 
+                        url('https://unsplash.com') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+            padding: 0 60px;
+        }
+
+        .hero-content {
+            max-width: 550px;
+        }
+
+        .hero-content h1 {
+            font-size: 45px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            color: var(--text-sub);
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background-color: var(--prime-blue);
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 14px 40px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--btn-hover);
+        }
+
+        /* Movie Slider/Grid Sections */
+        .main-container {
+            padding: 40px 60px;
+        }
+
+        .movie-section {
+            margin-bottom: 40px;
+        }
+
+        .movie-section h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .movie-section h2 span {
+            color: var(--prime-blue);
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .movie-card {
+            position: relative;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: #252e39;
+            aspect-ratio: 16 / 9;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: var(--nav-bg);
+            border-top: 1px solid #252e39;
+        }
+
+        .footer-logo {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .footer-logo span {
+            color: var(--prime-blue);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            list-style: none;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--prime-blue);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        footer p {
+            color: var(--text-sub);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="#" class="logo">prime<span>video</span></a>
+            <ul class="nav-links">
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#">Store</a></li>
+                <li><a href="#">Live TV</a></li>
+                <li><a href="#">Categories</a></li>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <a href="#" class="btn-signin">Sign In</a>
+        </div>
+    </nav>
+
+    <!-- Hero/Banner Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Prime Video</h1>
+            <p>Watch the latest movies, TV shows, and award-winning Amazon Originals. Available with an Amazon Prime membership.</p>
+            <a href="#" class="btn-primary">Try Prime Free</a>
+        </div>
+    </header>
+
+    <!-- Main Content Video Collections -->
+    <main class="main-container">
+        
+        <!-- Category 1 -->
+        <section class="movie-section">
+            <h2>Amazon <span>Originals</span></h2>
+            <div class="movie-grid">
+                <div class="movie-card">
+                    <img src="https://unsplash.com" alt="Show 1">
+                </div>
+                <div class="movie-card">
+                    <img src="https://unsplash.com" alt="Show 2">
+                </div>
+                <div class="movie-card">
+                    <img src="https://unsplash.com" alt="Show 3">
+                </div>
+                <div class="movie-card">
+                    <img src="https://unsplash.com" alt="Show 4">
+                </div>
+            </div>
+        </section>
+
+        <!-- Category 2 -->
+        <section class="movie-section">
+            <h2>Trending Movies</h2>
+            <div class="movie-grid">
+                <div class="movie-card">
+                    <img src="https://unsplash.com" alt="Movie 1">
+                </div>
+                <div class="movie-card">
+                    <img src="https://unsplash.com" alt="Movie 2">
+                </div>
+                <div class="movie-card">
+                    <img src="https://unsplash.com" alt="Movie 3">
+                </div>
+                <div class="movie-card">
+                    <img src="https://unsplash.com" alt="Movie 4">
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">prime<span>video</span></div>
+        <ul class="footer-links">
+            <li><a href="#">Terms and Privacy Notice</a></li>
+            <li><a href="#">Send us feedback</a></li>
+            <li><a href="#">Help</a></li>
+        </ul>
+        <p>&copy; 1996-2026, Amazon.com, Inc. or its affiliates. All rights reserved. Clone for educational purposes.</p>
+    </footer>
+
+</body>
+</html>
+
