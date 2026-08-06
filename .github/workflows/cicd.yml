@@ -21,31 +21,45 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Create Website Directory on EC2
+      - name: Verify SSH Connection
         run: |
           ssh -i ~/.ssh/id_rsa \
-          ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
-          "mkdir -p ~/websitenew"
+            -o StrictHostKeyChecking=no \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
+            "echo Connected && whoami && pwd"
+
+      - name: Create Website Directory
+        run: |
+          ssh -i ~/.ssh/id_rsa \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
+            "mkdir -p \$HOME/websitenew"
 
       - name: Copy Files to EC2 using SCP
         run: |
-          scp -i ~/.ssh/id_rsa -r ./* \
-          ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/websitenew/
+          HOME_DIR=$(ssh -i ~/.ssh/id_rsa \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
+            "echo \$HOME")
 
-      - name: Deploy Website to /var/www/html
+          echo "Remote home: $HOME_DIR"
+
+          scp -i ~/.ssh/id_rsa -r ./* \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:$HOME_DIR/websitenew/
+
+      - name: Deploy Website
         run: |
           ssh -i ~/.ssh/id_rsa \
-          ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
-            sudo rm -rf /var/www/html/*
-            sudo cp -r ~/websitenew/* /var/www/html/
-            sudo chown -R www-data:www-data /var/www/html
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << EOF
+          sudo mkdir -p /var/www/html
+          sudo rm -rf /var/www/html/*
+          sudo cp -r \$HOME/websitenew/* /var/www/html/
+          sudo chown -R www-data:www-data /var/www/html
           EOF
 
       - name: Verify Deployment
         run: |
           ssh -i ~/.ssh/id_rsa \
-          ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
-          "ls -la /var/www/html"
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
+            "ls -la /var/www/html"
 
-      - name: Print Success
-        run: echo " Website deployed successfully!"
+      - name: Success
+        run: echo "Website deployed successfully!"
